@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package m_beach;
+
+message m_beach_message {
+    string Station_Name = 1;
+    google.protobuf.Timestamp Measurement_Timestamp = 2;
+    float Air_Temperature = 3;
+    float Wet_Bulb_Temperature = 4;
+    int64 Humidity = 5;
+    float Rain_Intensity = 6;
+    float Interval_Rain = 7;
+    float Total_Rain = 8;
+    int64 Precipitation_Type = 9;
+    int64 Wind_Direction = 10;
+    float Wind_Speed = 11;
+    float Maximum_Wind_Speed = 12;
+    float Barometric_Pressure = 13;
+    int64 Solar_Radiation = 14;
+    int64 Heading = 15;
+    float Battery_Life = 16;
+    string Measurement_Timestamp_Label = 17;
+    string Measurement_ID = 18;
+}
