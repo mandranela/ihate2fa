@@ -20,6 +20,8 @@ DATASETS_PATHS = {
     "BWQAS"     : "beach-water-quality-automated-sensors-1.csv",
     "BWSAS"     : "beach-weather-stations-automated-sensors-1.csv",
     "DTFSHZPG"  : "Data Table for Science Hub Zhou paper Gullett.xlsx",
+    "MELPED"    : "Melbourne Pedestrians.csv",
+    "TAZAW"     : "Turner All Zones All Winds.xls",
     "IOTNL"     : "IoT_Network_Logs.csv",
     "IOTTEMP"   : "IOT-temp.csv",
     "IOT1"      : "IoTpond1.csv",
@@ -33,8 +35,6 @@ DATASETS_PATHS = {
     "IOT10"     : "IoTPond10.csv",
     "IOT11"     : "IoTPond11.csv",
     "IOT12"     : "IoTPond12.csv",
-    "MELPED"    : "Melbourne Pedestrians.csv",
-    "TAZAW"     : "Turner All Zones All Winds.xls"
 }
 
 DATASETS_ABS_PATHS = {dataset: path.join(DATASETS_FOLDER_ABS_PATH, dataset_path) for dataset, dataset_path in DATASETS_PATHS.items()}
