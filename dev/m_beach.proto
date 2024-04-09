@@ -1,8 +1,8 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
-package m_beach2;
-message m_beach2_message {
+package m_beach;
+message m_beach_message {
     string Station_Name = 1;
     google.protobuf.Timestamp Measurement_Timestamp = 2;
     float Air_Temperature = 3;

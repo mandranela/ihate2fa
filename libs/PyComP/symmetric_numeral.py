@@ -1,4 +1,4 @@
-from  core.data import *
+from .core.data import *
 from math import log2
 class SymmetricNumeral:
     '''

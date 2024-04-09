@@ -2,28 +2,19 @@ from collections import Counter
 
 import zlib, gzip, bz2, lzma
 
-from PyComP import huffman, ANS, sANS, uABS, arithmetic_coding, symmetric_numeral, file_compressor
+from libs.PyComP import huffman, ANS, sANS, uABS, arithmetic_coding, symmetric_numeral
 
 
-def compress_zlib(msg):
-    c_msg = zlib.compress(msg)
-
-    return c_msg
-
-
-def compress_gzip(msg):
-    c_msg = gzip.compress(msg)
-
-    return c_msg
-
-
-def compress_bz2(msg):
-    c_msg = bz2.compress(msg)
-
-    return c_msg
-
-
-def compress_lzma(msg):
-    c_msg = lzma.compress(msg)
-
-    return c_msg
+def compress(method: str, msg):
+    match method:
+        case "zlib":
+            e_msg = zlib.compress()
+        case "gzip":
+            e_msg = gzip.compress()
+        case "bz2":
+            e_msg = bz2.compress()
+        case "lzma":
+            e_msg = lzma.compress()
+        case "huffman":
+            h = huffman.Huffman
+            compressor = huffman()

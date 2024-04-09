@@ -11,32 +11,33 @@ BASE_DIR = path.dirname(path.abspath(__file__))
 STATIC_PATH = 'static'
 
 DATASETS_FOLDER = "datasets"
+DATASETS_FOLDER_REL_PATH = path.join(STATIC_PATH, DATASETS_FOLDER)
 DATASETS_FOLDER_ABS_PATH = path.join(BASE_DIR, STATIC_PATH, DATASETS_FOLDER)
 
 DATASETS_PATHS = {
-    "ASCCDCV"   : "All Sites combined concentration data clean version.xlsx",
-    "ARGAZAL"   : "Argentine All Zones all Winds.xlsx",
-    "ARMAZAL"   : "Armourdale All Zones All Winds.xlsx",
-    "BWQAS"     : "beach-water-quality-automated-sensors-1.csv",
-    "BWSAS"     : "beach-weather-stations-automated-sensors-1.csv",
-    "DTFSHZPG"  : "Data Table for Science Hub Zhou paper Gullett.xlsx",
-    "MELPED"    : "Melbourne Pedestrians.csv",
-    "TAZAW"     : "Turner All Zones All Winds.xls",
-    "IOTNL"     : "IoT_Network_Logs.csv",
-    "IOTTEMP"   : "IOT-temp.csv",
-    "IOT1"      : "IoTpond1.csv",
-    "IOT2"      : "IoTPond2.csv",
-    "IOT3"      : "IoTPond3.csv",
-    "IOT4"      : "IoTPond4.csv",
-    "IOT6"      : "IoTPond6.csv",
-    "IOT7"      : "IoTPond7.csv",
-    "IOT8"      : "IoTPond8.csv",
-    "IOT9"      : "IoTPond9.csv",
-    "IOT10"     : "IoTPond10.csv",
-    "IOT11"     : "IoTPond11.csv",
-    "IOT12"     : "IoTPond12.csv",
+    "ASCCDCV"   : "all_sites_combined_concentration_data_clean_version.xlsx",
+    "ARGAZAL"   : "argentine_all_zones_all_winds.xlsx",
+    "ARMAZAL"   : "armourdale_all_zones_all_winds.xlsx",
+    "BWQAS"     : "beach_water_quality_automated_sensors_1.csv",
+    "BWSAS"     : "beach_weather_stations_automated_sensors_1.csv",
+    "DTFSHZPG"  : "data_table_for_science_hub_zhou_paper_gullett.xlsx",
+    "IOTNL"     : "iot_network_logs.csv",
+    "IOTTEMP"   : "iot_temp.csv",
+    "IOT1"      : "iotpond1.csv",
+    "IOT2"      : "iotpond2.csv",
+    "IOT3"      : "iotpond3.csv",
+    "IOT4"      : "iotpond4.csv",
+    "IOT6"      : "iotpond6.csv",
+    "IOT7"      : "iotpond7.csv",
+    "IOT8"      : "iotpond8.csv",
+    "IOT9"      : "iotpond9.csv",
+    "IOT10"     : "iotpond10.csv",
+    "IOT11"     : "iotpond11.csv",
+    "IOT12"     : "iotpond12.csv",
+    "TAZAW"     : "turner_all_zones_all_winds.xls",
 }
 
+DATASETS_REL_PATHS = {dataset: path.join(DATASETS_FOLDER_REL_PATH, dataset_path) for dataset, dataset_path in DATASETS_PATHS.items()}
 DATASETS_ABS_PATHS = {dataset: path.join(DATASETS_FOLDER_ABS_PATH, dataset_path) for dataset, dataset_path in DATASETS_PATHS.items()}
 
 """
