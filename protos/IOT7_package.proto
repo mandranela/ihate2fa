@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package IOT7_package;
+message IOT7_package_message {
+    string created_at = 1;
+    string date = 2;
+    int64 entry_id = 3;
+    float temperaturec = 4;
+    int64 turbidity_ntu = 5;
+    float dissolved_oxygen_gml = 6;
+    float ph = 7;
+    float ammoniagml = 8;
+    int64 nitrategml = 9;
+    float fish_lengthcm = 10;
+    float fish_weightg = 11;
+}

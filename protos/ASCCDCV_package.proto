@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package ASCCDCV_package;
+message ASCCDCV_package_message {
+    float a_no2 = 1;
+    float a_ufp = 2;
+    float a_bc = 3;
+    float n_no2 = 4;
+    float n_ufp = 5;
+    float n_bc = 6;
+    float v_no2 = 7;
+    float v_ufp = 8;
+    float v_bc = 9;
+    float n_core_no2 = 10;
+    float n_core_ufp = 11;
+    float n_core_bc = 12;
+}

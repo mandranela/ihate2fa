@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package BWSAS_package;
+message BWSAS_package_message {
+    string station_name = 1;
+    google.protobuf.Timestamp measurement_timestamp = 2;
+    float air_temperature = 3;
+    float wet_bulb_temperature = 4;
+    int64 humidity = 5;
+    float rain_intensity = 6;
+    float interval_rain = 7;
+    float total_rain = 8;
+    int64 precipitation_type = 9;
+    int64 wind_direction = 10;
+    float wind_speed = 11;
+    float maximum_wind_speed = 12;
+    float barometric_pressure = 13;
+    int64 solar_radiation = 14;
+    int64 heading = 15;
+    float battery_life = 16;
+    string measurement_timestamp_label = 17;
+    string measurement_id = 18;
+}

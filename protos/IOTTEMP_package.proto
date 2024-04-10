@@ -1,0 +1,11 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package IOTTEMP_package;
+message IOTTEMP_package_message {
+    string id = 1;
+    string room_idid = 2;
+    google.protobuf.Timestamp noted_date = 3;
+    int64 temp = 4;
+    string outin = 5;
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package IOT10_package;
+message IOT10_package_message {
+    string created_at = 1;
+    int64 entry_id = 2;
+    float temperature = 3;
+    int64 turbidity = 4;
+    float disolved_oxygen = 5;
+    float ph = 6;
+    float ammonia = 7;
+    int64 nitrate = 8;
+    int64 population = 9;
+    float length = 10;
+    float weight = 11;
+}

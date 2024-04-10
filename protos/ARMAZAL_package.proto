@@ -1,0 +1,45 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package ARMAZAL_package;
+message ARMAZAL_package_message {
+    int64 mo = 1;
+    int64 dy = 2;
+    int64 yr = 3;
+    float z1ufp_nw = 4;
+    float z1bc_nw = 5;
+    float z1no2_nw = 6;
+    float z1ufp_ew = 7;
+    float z1bc_ew = 8;
+    float z1no2_ew = 9;
+    float z1ufp_sw = 10;
+    float z1bc_sw = 11;
+    float z1no2_sw = 12;
+    float z2ufp_nw = 13;
+    float z2bc_nw = 14;
+    float z2no2_nw = 15;
+    float z2ufp_ew = 16;
+    float z2bc_ew = 17;
+    float z2no2_ew = 18;
+    float z2ufp_sw = 19;
+    float z2bc_sw = 20;
+    float z2no2_sw = 21;
+    float z3ufp_nw = 22;
+    float z3bc_nw = 23;
+    float z3no2_nw = 24;
+    float z3ufp_ew = 25;
+    float z3bc_ew = 26;
+    float z3no2_ew = 27;
+    float z3ufp_sw = 28;
+    float z3bc_sw = 29;
+    float z3no2_sw = 30;
+    float z4ufp_nw = 31;
+    float z4bc_nw = 32;
+    float z4no2_nw = 33;
+    float z4ufp_ew = 34;
+    float z4bc_ew = 35;
+    float z4no2_ew = 36;
+    float z4ufp_sw = 37;
+    float z4bc_sw = 38;
+    float z4no2_sw = 39;
+}

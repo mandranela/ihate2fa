@@ -1,0 +1,33 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package ARGAZAL_package;
+message ARGAZAL_package_message {
+    float z1ufp_nw = 1;
+    float z1bc_nw = 2;
+    float z1no2_nw = 3;
+    float z1ufp_ew = 4;
+    float z1bc_ew = 5;
+    float z1no2_ew = 6;
+    float z1ufp_sw = 7;
+    float z1bc_sw = 8;
+    float z1no2_sw = 9;
+    float z2ufp_nw = 10;
+    float z2bc_nw = 11;
+    float z2no2_nw = 12;
+    float z2ufp_ew = 13;
+    float z2bc_ew = 14;
+    float z2no2_ew = 15;
+    float z2ufp_sw = 16;
+    float z2bc_sw = 17;
+    float z2no2_sw = 18;
+    float z3ufp_nw = 19;
+    float z3bc_nw = 20;
+    float z3no2_nw = 21;
+    float z3ufp_ew = 22;
+    float z3bc_ew = 23;
+    float z3no2_ew = 24;
+    float z3ufp_sw = 25;
+    float z3bc_sw = 26;
+    float z3no2_sw = 27;
+}
