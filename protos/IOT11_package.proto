@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/timestamp.proto";
 
 package IOT11_package;
 message IOT11_package_message {

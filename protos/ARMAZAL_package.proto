@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/timestamp.proto";
 
 package ARMAZAL_package;
 message ARMAZAL_package_message {

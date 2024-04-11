@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/timestamp.proto";
 
 package ASCCDCV_package;
 message ASCCDCV_package_message {
