@@ -1,6 +1,6 @@
-from  core.data import *
-from  utils.utils import *
-from  utils.file_utils import *
+from .core.data import *
+from .utils.utils import *
+from .utils.file_utils import *
 from typing import Tuple
 
 # states are not defined as python allows for infinite integer precision
@@ -103,7 +103,7 @@ class rANS(Data):
     def __rANS_encoding_table_for_a_symbol(self, symbol, final_state: int):
         output__log = []
         for i in range(final_state):
-            x = self.encode(data=[symbol], start_state=i)
+            x = self.encode(msg=[symbol], start_state=i)
             output__log.append([symbol, int(i), int(x)])
         return output__log
 

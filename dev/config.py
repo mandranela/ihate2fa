@@ -19,7 +19,6 @@ DATASETS_PATHS = {
     "ARMAZAL"   : "Armourdale All Zones All Winds.xlsx",
     "BWQAS"     : "beach-water-quality-automated-sensors-1.csv",
     "BWSAS"     : "beach-weather-stations-automated-sensors-1.csv",
-    "DTFSHZPG"  : "Data Table for Science Hub Zhou paper Gullett.xlsx",
     "IOTNL"     : "IoT_Network_Logs.csv",
     "IOTTEMP"   : "IOT-temp.csv",
     "IOT1"      : "IoTpond1.csv",

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package IOTNL_package;
+message IOTNL_package_message {
+    int64 framenumber = 1;
+    int64 frametime = 2;
+    int64 framelen = 3;
+    int64 ethsrc = 4;
+    int64 ethdst = 5;
+    int64 ipsrc = 6;
+    int64 ipdst = 7;
+    int64 ipproto = 8;
+    float iplen = 9;
+    float tcplen = 10;
+    float tcpsrcport = 11;
+    int64 tcpdstport = 12;
+    float value = 13;
+    int64 normality = 14;
+}

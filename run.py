@@ -12,8 +12,13 @@ def main():
     
     args = parser.parse_args()
     print(args)
+    
     dfs = datasets.get_dfs(args.datasets)
     print(dfs)
+    
+    
+    
+    
     
 
 

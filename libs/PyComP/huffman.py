@@ -1,4 +1,4 @@
-from  core.data import *
+from .core.data import *
 from typing import Tuple
 import numpy as np
 from typing import Tuple
@@ -150,10 +150,7 @@ class Huffman(Data):
         root_node = self.huffman_tree()
         self.__get_codes(root_node)
         encoded_val = ''
-        print(f"msg: {msg}")
-        print(f"self.ht: {self.huffman_table}")
         for m in msg:
-            print(f"m: {m}")
             encoded_val += self.huffman_table[m]
         return encoded_val, self.nodes[0]
         
@@ -208,8 +205,8 @@ class Huffman(Data):
         ((a(de))(bc))
             /¯¯¯¯¯¯   ¯¯¯¯¯¯\\
         (a(de))            (bc)
-        /¯¯¯ ¯¯¯\\       /¯¯¯ ¯¯¯\\
-        a      (de)      b       c
+        /¯¯¯ ¯¯¯\       /¯¯¯ ¯¯¯\\
+        a    (de)       b       c
                 /¯ ¯\\
                 d   e
         '''

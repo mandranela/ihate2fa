@@ -1,6 +1,6 @@
-from  core.data import *
-from  ANS import *
-from  utils.bit_array_utils import int_to_bitarray, bitarray_to_int
+from .core.data import *
+from .ANS import *
+from .utils.bit_array_utils import int_to_bitarray, bitarray_to_int
 import bitarray
 
 

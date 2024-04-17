@@ -1,0 +1,16 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package BWQAS_package;
+message BWQAS_package_message {
+    string beach_name = 1;
+    google.protobuf.Timestamp measurement_timestamp = 2;
+    float water_temperature = 3;
+    float turbidity = 4;
+    float transducer_depth = 5;
+    float wave_height = 6;
+    int64 wave_period = 7;
+    float battery_life = 8;
+    string measurement_timestamp_label = 9;
+    string measurement_id = 10;
+}

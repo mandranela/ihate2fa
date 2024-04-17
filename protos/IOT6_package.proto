@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package IOT6_package;
+message IOT6_package_message {
+    string created_at = 1;
+    int64 entry_id = 2;
+    float temperaturec = 3;
+    int64 turbidityntu = 4;
+    float dissolved_oxygengml = 5;
+    float ph = 6;
+    float ammoniagml = 7;
+    int64 nitrategml = 8;
+    int64 population = 9;
+    float fish_lengthcm = 10;
+    float fish_weightg = 11;
+}
