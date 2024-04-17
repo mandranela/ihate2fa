@@ -1,0 +1,58 @@
+api:
+  enabled: true
+sources:
+  docker-activity-file:
+    type: file
+    include:
+      - /data/output.jsonp
+  docker-activity-tcp:
+    type: socket
+    address: 0.0.0.0:9000
+    mode: tcp
+transforms:
+  parse-json:
+    type: remap
+    inputs:
+      - docker-activity-tcp
+    source: . = parse_json!(.message)
+  into-metrics:
+    type: log_to_metric
+    inputs:
+      - parse-json
+    metrics:
+      - type: gauge
+        field: memoryLimit
+        tags:
+          container_id: "{{ containerId }}"
+          container_name: "{{ containerName }}"
+      - type: gauge
+        field: memoryUsage
+        tags:
+          container_id: "{{ containerId }}"
+          container_name: "{{ containerName }}"
+      - type: gauge
+        field: pidCount
+        tags:
+          container_id: "{{ containerId }}"
+          container_name: "{{ containerName }}"
+      - type: gauge
+        field: cpuCount
+        tags:
+          container_id: "{{ containerId }}"
+          container_name: "{{ containerName }}"
+      - type: gauge
+        field: cpuPercent
+        tags:
+          container_id: "{{ containerId }}"
+          container_name: "{{ containerName }}"
+      - type: gauge
+        field: cpuEnergy
+        tags:
+          container_id: "{{ containerId }}"
+          container_name: "{{ containerName }}"
+sinks:
+  prometheus:
+    type: prometheus_exporter
+    inputs:
+      - into-metrics
+    address: 0.0.0.0:9090

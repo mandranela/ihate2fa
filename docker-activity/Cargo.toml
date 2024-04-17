@@ -1,0 +1,33 @@
+[package]
+name = "docker-activity"
+description = "Tool to monitor the statistics and the energy consumption of docker containers."
+repository = "https://github.com/jdrouet/docker-activity"
+keywords = ["docker", "powercap", "monitoring"]
+authors = ["Jeremie Drouet <jeremie.drouet@gmail.com>"]
+license = "AGPL-3.0-or-later"
+readme = "readme.md"
+edition = "2018"
+version = "1.0.1"
+
+exclude = ["example/"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["enrichment-powercap", "formatter-csv", "formatter-json"]
+enrichment-powercap = ["powercap"]
+formatter-csv = []
+formatter-json = ["serde", "serde_json"]
+
+[dependencies]
+bollard = { version = "0.12" }
+chrono = { version = "0.4" }
+clap = { version = "3.1", features = ["derive"] }
+futures = { version = "0.3" }
+futures-util = { version = "0.3" }
+powercap = { version = "0.3", optional = true }
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_json = { version = "1.0", optional = true }
+tokio = { version = "1.18", features = ["macros", "rt-multi-thread"] }
+tracing = { version = "0.1" }
+tracing-subscriber = { version = "0.3" }

@@ -1,0 +1,65 @@
+[api]
+enabled = true
+
+[sources.docker-activity-file]
+type = "file"
+include = ["/data/output.json"]
+
+[sources.docker-activity-tcp]
+type = "socket"
+address = "0.0.0.0:9000"
+mode = "tcp"
+
+[transforms.parse-json]
+type = "remap"
+inputs = ["docker-activity-file"]
+source = ". = parse_json!(.message)"
+
+[transforms.into-metrics]
+type = "log_to_metric"
+inputs = ["parse-json"]
+
+[[transforms.into-metrics.metrics]]
+type = "gauge"
+field = "memoryUsage"
+
+[transforms.into-metrics.metrics.tags]
+container_id = "{{ containerId }}"
+container_name = "{{ containerName }}"
+
+[[transforms.into-metrics.metrics]]
+type = "gauge"
+field = "pidCount"
+
+[transforms.into-metrics.metrics.tags]
+container_id = "{{ containerId }}"
+container_name = "{{ containerName }}"
+
+[[transforms.into-metrics.metrics]]
+type = "gauge"
+field = "cpuCount"
+
+[transforms.into-metrics.metrics.tags]
+container_id = "{{ containerId }}"
+container_name = "{{ containerName }}"
+
+[[transforms.into-metrics.metrics]]
+type = "gauge"
+field = "cpuPercent"
+
+[transforms.into-metrics.metrics.tags]
+container_id = "{{ containerId }}"
+container_name = "{{ containerName }}"
+
+[[transforms.into-metrics.metrics]]
+type = "gauge"
+field = "cpuEnergy"
+
+[transforms.into-metrics.metrics.tags]
+container_id = "{{ containerId }}"
+container_name = "{{ containerName }}"
+
+[sinks.prometheus]
+type = "prometheus_exporter"
+inputs = ["into-metrics"]
+address = "0.0.0.0:9090"
