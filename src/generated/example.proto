@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package mypackage;
+
+import "google/protobuf/timestamp.proto";
+
+message MyMessage {
+  // Field type inferred from 2 unique values in 38768 rows; 2 most common:
+  // "63rd Street Weather Station" (19707); "Oak Street Weather Station" (19061)
+  //
+  // csv field: "Station Name"
+  string station_name = 1;
+
+  // Field type inferred from 20415 unique values in 38768 rows; 5 most common:
+  // "01/01/2016 01:00:00 AM" (2); "01/01/2016 01:00:00 PM" (2); "01/01/2016
+  // 02:00:00 AM" (2); "01/01/2016 02:00:00 PM" (2); "01/01/2016 03:00:00 AM"
+  // (2)
+  //
+  // csv field: "Measurement Timestamp"
+  google.protobuf.Timestamp measurement_timestamp = 2;
+
+  // Field type inferred from 523 unique values in 38768 rows; 5 most common:
+  // "21.8" (245); "22.3" (226); "23.7" (215); "21.4" (214); "22.5" (213)
+  //
+  // csv field: "Air Temperature"
+  float air_temperature = 3;
+
+  // Field type inferred from 471 unique values in 38768 rows; 5 most common:
+  // "18.1" (219); "16.9" (218); "17.3" (217); "19.9" (214); "20.9" (212)
+  //
+  // csv field: "Wet Bulb Temperature"
+  float wet_bulb_temperature = 4;
+
+  // Field type inferred from 83 unique values in 38768 rows; 5 most common:
+  // "78.0" (911); "80.0" (905); "82.0" (897); "76.0" (893); "77.0" (888)
+  //
+  // csv field: "Humidity"
+  float humidity = 5;
+
+  // Field type inferred from 66 unique values in 38768 rows; 5 most common:
+  // "0.0" (37252); "0.6" (422); "1.2" (189); "1.8" (130); "2.4" (118)
+  //
+  // csv field: "Rain Intensity"
+  float rain_intensity = 6;
+
+  // Field type inferred from 179 unique values in 38768 rows; 5 most common:
+  // "0.0" (35623); "0.1" (534); "0.2" (252); "0.3" (198); "0.4" (135)
+  //
+  // csv field: "Interval Rain"
+  float interval_rain = 7;
+
+  // Field type inferred from 1923 unique values in 38768 rows; 5 most common:
+  // "0.0" (454); "26.0" (347); "218.8" (324); "536.6" (313); "3.7" (296)
+  //
+  // csv field: "Total Rain"
+  float total_rain = 8;
+
+  // Field type inferred from 4 unique values in 38768 rows; 4 most common:
+  // "0.0" (35796); "60.0" (2752); "70.0" (219); "5.0" (1)
+  //
+  // csv field: "Precipitation Type"
+  float precipitation_type = 9;
+
+  // Field type inferred from 360 unique values in 38768 rows; 5 most common:
+  // "0.0" (1059); "272.0" (266); "271.0" (263); "269.0" (256); "266.0" (241)
+  //
+  // csv field: "Wind Direction"
+  float wind_direction = 10;
+
+  // Field type inferred from 146 unique values in 38768 rows; 5 most common:
+  // "1.2" (1128); "1.3" (1126); "1.4" (1101); "1.1" (1085); "1.6" (1083)
+  //
+  // csv field: "Wind Speed"
+  float wind_speed = 11;
+
+  // Field type inferred from 207 unique values in 38768 rows; 5 most common:
+  // "2.7" (684); "2.3" (665); "2.5" (663); "3.7" (648); "2.4" (632)
+  //
+  // csv field: "Maximum Wind Speed"
+  float maximum_wind_speed = 12;
+
+  // Field type inferred from 516 unique values in 38768 rows; 5 most common:
+  // "995.8" (290); "995.0" (285); "993.2" (274); "994.7" (274); "993.8" (267)
+  //
+  // csv field: "Barometric Pressure"
+  float barometric_pressure = 13;
+
+  // Field type inferred from 1027 unique values in 38768 rows; 5 most common:
+  // "0.0" (3752); "1.0" (3042); "4.0" (2798); "2.0" (2793); "3.0" (2643)
+  //
+  // csv field: "Solar Radiation"
+  float solar_radiation = 14;
+
+  // Field type inferred from 15 unique values in 38768 rows; 5 most common:
+  // "354.0" (11927); "0.0" (8115); "1.0" (7270); "355.0" (4140); "353.0" (2978)
+  //
+  // csv field: "Heading"
+  float heading = 15;
+
+  // Field type inferred from 7 unique values in 38768 rows; 5 most common:
+  // "11.9" (14666); "12.0" (11064); "12.1" (10248); "11.8" (1830); "12.2" (880)
+  //
+  // csv field: "Battery Life"
+  float battery_life = 16;
+
+  // Field type inferred from 20415 unique values in 38768 rows; 5 most common:
+  // "01/01/2016 10:00 AM" (2); "01/01/2016 11:00 AM" (2); "01/01/2016 11:00 PM"
+  // (2); "01/01/2016 12:00 AM" (2); "01/01/2016 12:00 PM" (2)
+  //
+  // csv field: "Measurement Timestamp Label"
+  string measurement_timestamp_label = 17;
+
+  // Field type inferred from 38768 unique values in 38768 rows; 5 most common:
+  // "63rdStreetWeatherStation201504250900" (1);
+  // "63rdStreetWeatherStation201504300500" (1);
+  // "63rdStreetWeatherStation201506220900" (1);
+  // "63rdStreetWeatherStation201506221000" (1);
+  // "63rdStreetWeatherStation201506221100" (1)
+  //
+  // csv field: "Measurement ID"
+  string measurement_id = 18;
+}

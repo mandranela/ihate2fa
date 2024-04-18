@@ -1,3 +1,6 @@
 protobuf
 pandas
+pyarrow
+inflection
+brotli
 openpyxl

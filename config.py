@@ -4,7 +4,6 @@ ENCODING = 'utf-8'
 
 BASE_DIR = path.dirname(path.abspath(__file__))
 
-
 """
 Пути для хранения статичных файлов
 """
