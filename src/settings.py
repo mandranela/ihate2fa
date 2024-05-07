@@ -46,3 +46,25 @@ compression_dict.update(
         for i in range(1, 10)
     }
 )
+
+
+datasets = [
+
+    'beach_water_quality_automated_sensors_1',
+    'beach_weather_stations_automated_sensors_1',
+    'iot_network_logs',
+    'iot_temp',
+    'iotpond1',
+    'iotpond10',
+    'iotpond11',
+    'iotpond12',
+    'iotpond2',
+    'iotpond3',
+    'iotpond4',
+    'iotpond6',
+    'iotpond7',
+    'iotpond8',
+    'iotpond9',
+]
+
+test_structs_ids = {name: i for i, name in enumerate(datasets)}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message SelfDescribingCompressedMessage {
+  bytes descriptor_set = 1;
+
+  bytes message = 2;
+
+  repeated int32 descriptor_sizes = 3;
+
+  repeated int32 message_sizes = 4;
+
+}

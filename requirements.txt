@@ -4,3 +4,5 @@ pyarrow
 inflection
 brotli
 openpyxl
+ortools
+black
