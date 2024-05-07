@@ -351,7 +351,7 @@ def combine_self_described_message(alg: str):
 
     collected_data = pd.DataFrame(data)
     collected_data.to_csv(
-        f"/Users/vladislavkovazin/miem/gdepc/static/analytics/packaging_{alg}.csv",
+        f"/Users/vladislavkovazin/miem/gdepc/static/analytics/packaging_{alg}_{knapsack.max_container}.csv",
         index=False,
     )
 
@@ -468,7 +468,7 @@ def combine_message_with_struct_id(alg: str):
 
     collected_data = pd.DataFrame(data)
     collected_data.to_csv(
-        f"/Users/vladislavkovazin/miem/gdepc/static/analytics/packaging_{alg}_no_descriptors.csv",
+        f"/Users/vladislavkovazin/miem/gdepc/static/analytics/packaging_{alg}_no_descriptors_{knapsack.max_container}.csv",
         index=False,
     )
 
@@ -482,5 +482,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     combine_self_described_message(args.compression)
-    combine_message_with_struct_id(args.compression)
+    # combine_message_with_struct_id(args.compression)
     # subprocess.run(["rm", "-rf", f"{GENERATED_PATH}/generated"])
