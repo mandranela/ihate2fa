@@ -1,4 +1,5 @@
 from typing import List
+
 # from generated import example_pb2
 from google.protobuf.internal.well_known_types import Timestamp
 from google.protobuf.message import Message
@@ -9,10 +10,19 @@ from google.protobuf.descriptor_pb2 import FileDescriptorProto
 from google.protobuf import message_factory
 from google.protobuf import reflection
 
-def get_proto_message_with_class(data: pd.Series, class_: Message) -> Message:  
+
+def get_proto_message_with_class(data: pd.Series, class_: Message) -> Message:
     columns = data.keys()
     columns_underscore = [
-        inflection.underscore(column).replace('/', '_').replace(' (', '_').replace('(', '_').replace(" ", "_").replace('.', '_').replace('(', '').replace(')', '') for column in data.keys()
+        inflection.underscore(column)
+        .replace("/", "_")
+        .replace(" (", "_")
+        .replace("(", "_")
+        .replace(" ", "_")
+        .replace(".", "_")
+        .replace("(", "")
+        .replace(")", "")
+        for column in data.keys()
     ]
     message = class_()
 
@@ -29,6 +39,7 @@ def get_proto_message_with_class(data: pd.Series, class_: Message) -> Message:
             continue
         setattr(message, proto_attr_name, to_set)
     return message
+
 
 # def get_proto_message(data: pd.Series) -> Message:
 #     columns = data.keys()

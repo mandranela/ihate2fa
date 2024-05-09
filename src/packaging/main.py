@@ -1,8 +1,9 @@
 import bz2
 import gzip
+import json
 import lzma
 from random import choice, seed
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 import numpy as np
 import pandas as pd
 from google.protobuf import message_factory
@@ -11,24 +12,20 @@ from google.protobuf import descriptor_pb2
 from google.protobuf.any_pb2 import Any
 from parse import get_proto_message_with_class
 import brotli
-from settings import datasets, test_structs_ids
+from settings import datasets, test_structs_ids, compression_decompression
 from packaging.proto import package_compressed_pb2
 from packaging.proto import package_compressed_no_descriptors_pb2
 import subprocess
 from ortools.algorithms.python import knapsack_solver
 import zlib
 import brotli
+from google.protobuf.json_format import MessageToDict
+
 
 GENERATED_PATH = "/Users/vladislavkovazin/miem/gdepc/src"
 XTOPROTO_PATH = "/Users/vladislavkovazin/miem/xtoproto/cmd/xtoproto"
 PROTOC_RUN = f"protoc -I={GENERATED_PATH}/generated --python_out={GENERATED_PATH}/generated {GENERATED_PATH}/generated/example.proto"
 
-# compression_algorithm = zlib.compress
-# decompression_algorithm = zlib.decompress
-compression_algorithm = lzma.compress
-decompression_algorithm = lzma.decompress
-# compression_algorithm = brotli.compress
-# decompression_algorithm = brotli.decompress
 
 SEED = 10
 seed(SEED)
@@ -46,29 +43,108 @@ def get_df(name):
 class PackageMessage:
     descriptor: descriptor_pb2.FileDescriptorSet
     message: Message
+    message_data: Dict
     descriptor_size: int
     message_size: int
     total_size: int
-    struct_id: int
+    struct_id: str
+
+    compression: str = "no_compression"
 
     def __init__(
-        self, descriptor: descriptor_pb2.FileDescriptorSet, message: Message
+        self,
+        descriptor: descriptor_pb2.FileDescriptorSet,
+        message: Message,
+        compression: str,
     ) -> None:
         self.descriptor = descriptor
         self.message = message
+        self.message_data = MessageToDict(message)
+        self.compression = compression
         self.descriptor_size = len(
-            compression_algorithm(descriptor.SerializeToString())
+            compression_decompression[self.compression]["compression"](
+                descriptor.SerializeToString()
+            )
         )
-        self.message_size = len(compression_algorithm(message.SerializeToString()))
+        self.message_size = len(
+            compression_decompression[self.compression]["compression"](
+                message.SerializeToString()
+            )
+        )
         self.total_size = self.descriptor_size + self.message_size
+
+    @classmethod
+    def generate(cls, message: dict, compression: str, descriptor=None):
+        import os
+        import subprocess
+        import uuid
+
+        df = pd.DataFrame(message, index=[0])
+
+        if not descriptor:
+            name = str(uuid.uuid1())
+            df.to_csv(
+                f"/Users/vladislavkovazin/miem/gdepc/src/generated/{name}.csv",
+                index=False,
+            )
+            os.chdir("/Users/vladislavkovazin/miem/xtoproto")
+            subprocess.run(
+                [
+                    "go",
+                    "run",
+                    f"{XTOPROTO_PATH}/xtoproto.go",
+                    "-csv",
+                    f"/Users/vladislavkovazin/miem/gdepc/src/generated/{name}.csv",
+                    "-default_workspace",
+                    GENERATED_PATH,
+                ],
+                stdout=subprocess.DEVNULL,
+            )
+            subprocess.run(
+                [
+                    "mv",
+                    f"{GENERATED_PATH}/generated/example.proto",
+                    f"{GENERATED_PATH}/generated/{name}.proto",
+                ]
+            )
+
+            os.chdir("/Users/vladislavkovazin/miem/gdepc/src/generated")
+            subprocess.run(
+                [
+                    "protoc",
+                    f"-I={GENERATED_PATH}/generated",
+                    f"--python_out={GENERATED_PATH}/generated",
+                    "--include_imports",
+                    f"--descriptor_set_out={GENERATED_PATH}/generated/{name}.dsc",
+                    f"{GENERATED_PATH}/generated/{name}.proto",
+                ]
+            )
+
+            DSCR_PATH = f"/Users/vladislavkovazin/miem/gdepc/src/generated/{name}.dsc"
+            with open(DSCR_PATH, "rb") as file:
+                descriptor = descriptor_pb2.FileDescriptorSet.FromString(file.read())
+
+            subprocess.run(
+                [
+                    "rm",
+                    DSCR_PATH,
+                    f"{GENERATED_PATH}/generated/{name}.proto",
+                    f"{GENERATED_PATH}/generated/{name}.csv",
+                    f"{GENERATED_PATH}/generated/{name.replace('-', '_')}_pb2.py",
+                ]
+            )
+        message_class = get_message_class(descriptor)
+        message = get_proto_message_with_class(df.iloc[0], message_class)
+        return cls(descriptor, message, compression)
 
 
 class KnapSack:
-    max_messages = 10
+    max_messages = 64
     # 360, 1960
     max_container = 1960
     messages: List[PackageMessage] = []
     priority: List[int] = []
+    compression: str = "no_compression"
 
     def add_messages(self, messages: List[PackageMessage]):
         for message in messages:
@@ -86,17 +162,25 @@ class KnapSack:
             package_compressed_pb2.SelfDescribingCompressedMessage()
         )
         for message in packed_messages:
-            self_describing_compressed.descriptor_set += compression_algorithm(
-                message.descriptor.SerializeToString()
-            )
+            self_describing_compressed.descriptor_set += compression_decompression[
+                message.compression
+            ]["compression"](message.descriptor.SerializeToString())
             self_describing_compressed.descriptor_sizes.append(
-                len(compression_algorithm(message.descriptor.SerializeToString()))
+                len(
+                    compression_decompression[message.compression]["compression"](
+                        message.descriptor.SerializeToString()
+                    )
+                )
             )
-            self_describing_compressed.message += compression_algorithm(
-                message.message.SerializeToString()
-            )
+            self_describing_compressed.message += compression_decompression[
+                message.compression
+            ]["compression"](message.message.SerializeToString())
             self_describing_compressed.message_sizes.append(
-                len(compression_algorithm(message.message.SerializeToString()))
+                len(
+                    compression_decompression[message.compression]["compression"](
+                        message.message.SerializeToString()
+                    )
+                )
             )
 
         return self_describing_compressed
@@ -104,10 +188,9 @@ class KnapSack:
     def knapsack(self, max_container=None):
 
         solver = knapsack_solver.KnapsackSolver(
-            knapsack_solver.SolverType.KNAPSACK_MULTIDIMENSION_BRANCH_AND_BOUND_SOLVER,
+            knapsack_solver.SolverType.KNAPSACK_64ITEMS_SOLVER,
             "KnapsackExample",
         )
-
         weights = [
             [message.total_size for message in self.messages],
         ]
@@ -141,7 +224,43 @@ class KnapSack:
         return result
 
 
+class KnapSackJson(KnapSack):
+    max_messages = 64
+
+    def add_message(self, message: PackageMessage):
+        # only message
+        message_data_raw: str = json.dumps(message.message_data)
+        message_data_raw_compressed: bytes = compression_decompression[
+            message.compression
+        ]["compression"](message_data_raw.encode())
+        message.message_size = len(message_data_raw_compressed)
+        message.total_size = len(message_data_raw_compressed) + 28
+        self.messages.append(message)
+        self.priority.append(1)
+
+    def pack_messages(self, indexes: List[int]):
+        packed_messages: List[PackageMessage] = []
+        for index in indexes:
+            packed_messages.append(self.messages[index])
+
+        compressed_message: Message = (
+            package_compressed_no_descriptors_pb2.CompressedMessage()
+        )
+
+        for message in packed_messages:
+            message_data_raw: str = json.dumps(message.message_data)
+            compressed_data = compression_decompression[message.compression][
+                "compression"
+            ](message_data_raw.encode())
+            compressed_message.message += compressed_data
+            compressed_message.message_sizes.append(len(compressed_data))
+
+        return compressed_message
+
+
 class KnapSackWithStructId(KnapSack):
+    max_messages = 64
+
     def add_message(self, message: PackageMessage):
         # only message
         message.total_size -= message.descriptor_size
@@ -158,11 +277,15 @@ class KnapSackWithStructId(KnapSack):
         )
 
         for message in packed_messages:
-            compressed_message.message += compression_algorithm(
-                message.message.SerializeToString()
-            )
+            compressed_message.message += compression_decompression[
+                message.compression
+            ]["compression"](message.message.SerializeToString())
             compressed_message.message_sizes.append(
-                len(compression_algorithm(message.message.SerializeToString()))
+                len(
+                    compression_decompression[message.compression]["compression"](
+                        message.message.SerializeToString()
+                    )
+                )
             )
             compressed_message.struct_id.append(message.struct_id)
         return compressed_message
@@ -232,7 +355,15 @@ class Packaging:
         return self.descriptors[name]
 
     def get_struct_id(self, name: str):
-        return test_structs_ids[name]
+        return str(test_structs_ids[name])
+
+    def get_messages_data(self, name, number: int):
+        data = self.dfs[name]
+        return data.iloc[:number]
+
+    def get_message_data(self, name):
+        data = self.dfs[name].sample()
+        return data.iloc[0]
 
     def get_random_message(self):
         if self.messages_num <= 0:
@@ -256,10 +387,10 @@ def get_message_class(descriptor_set: descriptor_pb2.FileDescriptorSet) -> Messa
     return message_classes["mypackage.MyMessage"]
 
 
-def recompress_with_additional_data(data, additional_data):
-    decompressed_data = decompression_algorithm(data)
+def recompress_with_additional_data(data, additional_data, compression, decompression):
+    decompressed_data = decompression(data)
     decompressed_data += additional_data
-    return compression_algorithm(decompressed_data)
+    return compression(decompressed_data)
 
 
 def combine_self_described_message(alg: str):
@@ -273,12 +404,10 @@ def combine_self_described_message(alg: str):
     if alg == "gzip":
         compression_algorithm = gzip.compress
         decompression_algorithm = gzip.decompress
-    if alg == "bz2":
-        compression_algorithm = bz2.compress
-        decompression_algorithm = bz2.decompress
     data = []
     packaging = Packaging()
     knapsack = KnapSack()
+    knapsack.compression = alg if alg else "no_compression"
     packages_counter = 0
     for dataset_name in datasets:
         packaging.add_df(dataset_name)
@@ -299,8 +428,12 @@ def combine_self_described_message(alg: str):
                     knapsack.add_message(message)
 
         packed = knapsack.knapsack()
-        packed.descriptor_set = compression_algorithm(packed.descriptor_set)
-        packed.message = compression_algorithm(packed.message)
+        packed.descriptor_set = compression_decompression[knapsack.compression][
+            "compression"
+        ](packed.descriptor_set)
+        packed.message = compression_decompression[knapsack.compression]["compression"](
+            packed.message
+        )
         estimated = knapsack.max_container - packed.ByteSize()
 
         if len(knapsack.messages) < knapsack.max_messages:
@@ -400,6 +533,7 @@ def combine_message_with_struct_id(alg: str):
     data = []
     packaging = Packaging()
     knapsack = KnapSackWithStructId()
+    knapsack.compression = alg if alg else "no_compression"
     packages_counter = 0
     for dataset_name in datasets:
         packaging.add_df(dataset_name)
@@ -419,7 +553,9 @@ def combine_message_with_struct_id(alg: str):
                 if message:
                     messages.append(message)
         packed = knapsack.knapsack()
-        packed.message = compression_algorithm(packed.message)
+        packed.message = compression_decompression[knapsack.compression]["compression"](
+            packed.message
+        )
         estimated = knapsack.max_container - packed.ByteSize()
         if len(knapsack.messages) < knapsack.max_messages:
             for _ in range(knapsack.max_messages - len(knapsack.messages)):
