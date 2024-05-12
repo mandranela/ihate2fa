@@ -108,4 +108,4 @@ def dataset_compression(df: pd.DataFrame, name: str):
         for message_data in messages_data:
             data.extend(message_data)
     result = pd.DataFrame(data)
-    result.to_csv(f'{name}_compression.csv')
+    result.to_csv(f"{name}_compression.csv")
