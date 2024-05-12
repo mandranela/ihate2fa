@@ -20,6 +20,11 @@ from ortools.algorithms.python import knapsack_solver
 import zlib
 import brotli
 from google.protobuf.json_format import MessageToDict
+import logging
+
+logging.basicConfig(level=logging.WARNING)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 GENERATED_PATH = "/Users/vladislavkovazin/miem/gdepc/src"
@@ -197,8 +202,9 @@ class KnapSack:
         capacities = [max_container]
         if max_container is None:
             capacities = [self.max_container]
-
+        logger.debug("Init solver")
         solver.init(self.priority, weights, capacities)
+        logger.debug("Try to solve")
         computed_value = solver.solve()
         packed_items = []
         packed_weights = []
@@ -210,6 +216,8 @@ class KnapSack:
                 total_weight += weights[0][i]
         if not packed_items:
             return None
+        logger.debug("Pack items in container")
+
         result = self.pack_messages(packed_items)
         self.messages = [
             message

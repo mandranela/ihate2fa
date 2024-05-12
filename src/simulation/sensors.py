@@ -2,7 +2,7 @@ from asyncio import Queue
 import asyncio
 import json
 import os
-from typing import List
+from typing import Dict, List
 from settings import datasets
 from packaging.main import Packaging
 from random import shuffle
@@ -53,6 +53,20 @@ class SensorsBrokerSimulation:
                 return json.load(file)
 
         return None
+
+    @staticmethod
+    def iter_test_message():
+        if os.path.isfile(
+            "/Users/vladislavkovazin/miem/gdepc/static/datasets/packaging_test_dataset.json"
+        ):
+            with open(
+                "/Users/vladislavkovazin/miem/gdepc/static/datasets/packaging_test_dataset.json",
+                "r",
+            ) as file:
+                data: List[Dict] = json.load(file)
+
+        for message in data:
+            yield message
 
     async def add_to_queue(self, messages: List[dict]):
         for message in messages:

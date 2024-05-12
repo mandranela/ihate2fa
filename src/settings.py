@@ -69,9 +69,9 @@ datasets = [
 test_structs_ids = {name: i for i, name in enumerate(datasets)}
 
 compression_decompression = {
-    # 'no_compression': {'compression': lambda x: x, 'decompression': lambda x: x},
-    # 'brotli': {'compression': brotli.compress, 'decompression': brotli.decompress},
-    # 'lzma': {'compression': lzma.compress, 'decompression': lzma.decompress},
-    # 'gzip': {'compression': gzip.compress, 'decompression': gzip.decompress},
+    "no_compression": {"compression": lambda x: x, "decompression": lambda x: x},
+    "brotli": {"compression": brotli.compress, "decompression": brotli.decompress},
+    "lzma": {"compression": lzma.compress, "decompression": lzma.decompress},
+    "gzip": {"compression": gzip.compress, "decompression": gzip.decompress},
     "zlib": {"compression": zlib.compress, "decompression": zlib.decompress},
 }
