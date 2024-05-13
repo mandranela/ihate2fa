@@ -5,7 +5,6 @@ from google.protobuf import message_factory
 from google.protobuf.message import Message
 from google.protobuf import descriptor_pb2
 from parse import get_proto_message_with_class
-from settings import compression_decompression
 from packaging.proto import package_compressed_pb2
 from packaging.proto import package_compressed_no_descriptors_pb2
 from ortools.algorithms.python import knapsack_solver
@@ -14,7 +13,7 @@ import logging
 import os
 import subprocess
 import uuid
-from gdepc.settings import XTOPROTO_PATH, GENERATED_PATH
+from gdepc.settings import XTOPROTO_PATH, GENERATED_PATH, compression_decompression
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -22,17 +21,17 @@ logger.setLevel(logging.DEBUG)
 
 
 def get_message_class(descriptor_set: descriptor_pb2.FileDescriptorSet) -> Message:
+    """
+        получаем класс сообщения из дескриптора
+    """
     message_classes = message_factory.GetMessages(descriptor_set.file)
     return message_classes["mypackage.MyMessage"]
 
 
-def recompress_with_additional_data(data, additional_data, compression, decompression):
-    decompressed_data = decompression(data)
-    decompressed_data += additional_data
-    return compression(decompressed_data)
-
-
 class PackageMessage:
+    """
+        Класс обертка над сообщением из сенсора
+    """
     descriptor: descriptor_pb2.FileDescriptorSet
     message: Message
     message_data: Dict
@@ -49,6 +48,7 @@ class PackageMessage:
         message: Message,
         compression: str,
     ) -> None:
+        
         self.descriptor = descriptor
         self.message = message
         self.message_data = MessageToDict(message)
@@ -67,6 +67,9 @@ class PackageMessage:
 
     @classmethod
     def generate(cls, message: dict, compression: str, descriptor=None):
+        """
+            собираем сообщения из данных с дескриптором и сжатия
+        """
         name = str(uuid.uuid1())
 
         df = pd.DataFrame(message, index=[0])
@@ -127,6 +130,9 @@ class PackageMessage:
 
 
 class KnapSack:
+    """
+        Класс для упаковки по алгоритму рюкзака с дескрипторами
+    """
     max_messages = 64
     # 360, 1960
     max_container = 1960
@@ -135,14 +141,23 @@ class KnapSack:
     compression: str = "no_compression"
 
     def add_messages(self, messages: List[PackageMessage]):
+        """
+            добавляем сообщение в алгоритм
+        """
         for message in messages:
             self.add_message(message)
 
     def add_message(self, message: PackageMessage):
+        """
+            добавляем сообщения в алгоритм
+        """
         self.messages.append(message)
         self.priority.append(1)
 
     def pack_messages(self, indexes: List[int]):
+        """
+            упаковываем сообщения в контейнер
+        """
         packed_messages: List[PackageMessage] = []
         for index in indexes:
             packed_messages.append(self.messages[index])
@@ -174,7 +189,9 @@ class KnapSack:
         return self_describing_compressed
 
     def knapsack(self, max_container=None):
-
+        """
+            упаковываем в контейнер
+        """
         solver = knapsack_solver.KnapsackSolver(
             knapsack_solver.SolverType.KNAPSACK_64ITEMS_SOLVER,
             "KnapsackExample",
@@ -216,6 +233,9 @@ class KnapSack:
 
 
 class KnapSackJson(KnapSack):
+    """
+        упаковываем в контейнер
+    """
     max_messages = 64
 
     def add_message(self, message: PackageMessage):

@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 from gdepc.packaging import KnapSack, PackageMessage, KnapSackWithStructId, KnapSackJson
 from google.protobuf.message import Message
 from google.protobuf import descriptor_pb2
-from settings import compression_decompression
+from gdepc.settings import compression_decompression
 import asyncio
 import logging
 from gdepc.subscriber import subscriber_coro
@@ -16,20 +16,23 @@ logger.setLevel(logging.DEBUG)
 
 class GDEPC:
 
-    max_messages = 64
-    input_queue: Queue[dict]
-    result_queue: Queue[Message]
-    not_fully_packed: Queue[Message]
+    max_messages = 64 # максимальное число сообщений для упаковки
+    input_queue: Queue[dict] # очередь сообщений с сенсоров
+    result_queue: Queue[Message] # очередь из контейнеров
+    not_fully_packed: Queue[Message] # служебная очередь
     running = False
 
-    descriptors_cache: Dict[str, descriptor_pb2.FileDescriptorSet] = {}
+    descriptors_cache: Dict[str, descriptor_pb2.FileDescriptorSet] = {} # кеш дескрипторов, используется с контейнерами с дескрипторами
 
     def __init__(
         self,
-        compression: str,
-        include_descriptors,
-        json_structure,
+        compression: str = 'brotli',
+        include_descriptors = False,
+        json_structure = True   ,
     ):
+        """
+            метод для создания GDEPC
+        """
         self.input_queue = asyncio.Queue(maxsize=self.max_messages)
         self.result_queue = Queue()
         self.not_fully_packed = Queue(maxsize=5)
@@ -46,6 +49,9 @@ class GDEPC:
         self.include_descriptors = include_descriptors
 
     def recompress_with_additional_data(self, data, additional_data):
+        """
+            добавляем в контейнер дополнительные данные
+        """
         decompressed_data = compression_decompression[self.compression][
             "decompression"
         ](data)
@@ -55,6 +61,9 @@ class GDEPC:
         )
 
     def pack_message(self, message):
+        """
+            упаковываем сообщение с сенсора в объект
+        """
         columns = list(message.keys())
         columns.sort()
         hash = hashlib.sha256(" ".join(columns).encode()).hexdigest()
@@ -73,6 +82,9 @@ class GDEPC:
         return package_message
 
     async def mqtt_2_queue(self, url, topic):
+        """
+            вычитывает из брокера и перекладывает в очередь сообщений
+        """
         try:
             messages_num = 0
             while True:
@@ -85,6 +97,9 @@ class GDEPC:
             logger.exception("Fail to put message in input queue!")
 
     async def add_messages_to_input_queue(self):
+        """
+            добавляем сообщения из очереди сообщений в алгоритм упаковки пока не заполним
+        """
         logger.debug("Add messages to queue")
 
         while len(self.knapsack.messages) < self.knapsack.max_messages:
@@ -97,10 +112,15 @@ class GDEPC:
                 await asyncio.sleep(1)
 
     async def pack(self, estimated: Optional[int] = None):
+        """
+            упаковываем в контейнер
+        """
         return self.knapsack.knapsack(estimated)
 
     async def packing(self):
-
+        """
+            запускаем упаковку
+        """
         while True:
             await self.add_messages_to_input_queue()
 
@@ -161,6 +181,9 @@ class GDEPC:
                 await self.not_fully_packed.put(packed)
 
     async def flush(self) -> List[Message]:
+        """
+            проталкиваем оставшиеся сообщения и контейнеры
+        """
         logger.debug("Flushing")
         flushed = []
         while not self.not_fully_packed.empty():
