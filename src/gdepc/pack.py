@@ -42,7 +42,6 @@ class Packaging:
         hash = hashlib.sha256(" ".join(columns).encode()).hexdigest()
         cached_descriptor = self.descriptors_cache.get(hash)
         if cached_descriptor:
-            logger.debug("Got descriptor from cache")
             package_message = PackageMessage.generate(
                 message, cached_descriptor
             )

@@ -17,3 +17,5 @@ pyliblzfse
 bzip3
 nlzss11
 deflate
+bitstring
+huffpy

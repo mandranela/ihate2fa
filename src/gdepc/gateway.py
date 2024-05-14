@@ -1,7 +1,7 @@
 from asyncio import Queue
 import hashlib
 from typing import Dict, List, Optional
-from gdepc.packaging import KnapSack, PackageMessage, KnapSackWithStructId, KnapSackJson
+from gdepc.pack import KnapSack, PackageMessage, KnapSackWithStructId, KnapSackJson
 from google.protobuf.message import Message
 from google.protobuf import descriptor_pb2
 from gdepc.settings import compression_decompression
@@ -71,7 +71,6 @@ class GDEPC:
         hash = hashlib.sha256(" ".join(columns).encode()).hexdigest()
         cached_descriptor = self.descriptors_cache.get(hash)
         if cached_descriptor:
-            logger.debug("Got descriptor from cache")
             package_message = PackageMessage.generate(
                 message, self.compression, cached_descriptor
             )

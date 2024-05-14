@@ -13,7 +13,7 @@ from bitstring import BitArray
 
 GENERATED_PATH = os.getcwd()
 XTOPROTO_PATH = os.path.dirname(os.path.abspath(__file__)) + "/bin/xtoproto"
-DATASETS_PATH = "/Users/vladislavkovazin/miem/gdepc/static/datasets"
+DATASETS_PATH = "/home/vvkovyazin/gdepc/static/datasets"
 
 compression_decompression = {
     "no_compression": {"compression": lambda x: x, "decompression": lambda x: x},
@@ -22,10 +22,6 @@ compression_decompression = {
     "gzip": {"compression": gzip.compress, "decompression": gzip.decompress},
     "zlib": {"compression": zlib.compress, "decompression": zlib.decompress},
 }
-
-
-
-
 
 def compress_(message: bytes, compressor: Callable[[bytes], bytes]):
     return compressor(message)

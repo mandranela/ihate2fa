@@ -4,13 +4,13 @@ from typing import List
 from gdepc.settings import datasets, DATASETS_PATH, compression_dict, GENERATED_PATH
 import pandas as pd
 import logging
-from gdepc.packaging import Packaging, compress_bytes, CompressionData, PackageMessageData
+from gdepc.pack import Packaging, compress_bytes, CompressionData, PackageMessageData
 import multiprocessing as mp
 from multiprocessing.pool import Pool, AsyncResult
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(f"{__name__}")
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.INFO)
 
 packaging = Packaging()
 # logger.info(f"[{input_data.compression_name}]: " + f"{data.json_message_size = }")
@@ -31,10 +31,10 @@ def start_compression(pool: Pool):
     for dataset_name in datasets:
         
         dataset_file_name = datasets[dataset_name]
-        logger.info("Start compression")
+        logger.info(f"Start compression {dataset_name}")
         dataset_file_path = DATASETS_PATH + '/' + dataset_file_name
         df = pd.read_csv(dataset_file_path)
-        for key, row in df[:1000].iterrows():
+        for key, row in df[:10000].iterrows():
             json_message = row.to_dict()
             message = packaging.pack_message(json_message)
             cmp_data = CompressionData()
@@ -44,12 +44,13 @@ def start_compression(pool: Pool):
             starmap_data = [(cmp_data, compression_name, dataset_name, key) for compression_name in list(compression_dict.keys())]
             analytic_datas_tasks = pool.starmap_async(compress_bytes, starmap_data)
             tasks.append(analytic_datas_tasks)
+
     for task in tasks:
         results: List[PackageMessageData] = task.get()
         for result in results:
             analytic_data.append(result.to_dict_analytic())
+        logger.info(f"Data loaded {len(analytic_data)}")
     return analytic_data
-
             # for compression_name, compression_func in text_compression.items():
             #     data = message.compress_huffman(compression_func)
             #     logger.info(f"[{compression_name}]: " + f"{data.json_message_size = }")
@@ -77,7 +78,7 @@ def start_compression(pool: Pool):
 if __name__ == '__main__':
     analytic_data = []
 
-    with mp.Pool(mp.cpu_count()) as pool:
+    with mp.Pool(mp.cpu_count() * 2) as pool:
         data = start_compression(pool)
 
     
