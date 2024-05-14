@@ -15,6 +15,7 @@ def get_proto_message_with_class(data: pd.Series, class_: Message) -> Message:
     columns = data.keys()
     columns_underscore = [
         inflection.underscore(column)
+        .rstrip()
         .replace("/", "_")
         .replace(" (", "_")
         .replace("(", "_")

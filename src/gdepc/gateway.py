@@ -10,28 +10,30 @@ import logging
 from gdepc.subscriber import subscriber_coro
 
 logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger("my.package")
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
 class GDEPC:
 
-    max_messages = 64 # максимальное число сообщений для упаковки
-    input_queue: Queue[dict] # очередь сообщений с сенсоров
-    result_queue: Queue[Message] # очередь из контейнеров
-    not_fully_packed: Queue[Message] # служебная очередь
+    max_messages = 64  # максимальное число сообщений для упаковки
+    input_queue: Queue[dict]  # очередь сообщений с сенсоров
+    result_queue: Queue[Message]  # очередь из контейнеров
+    not_fully_packed: Queue[Message]  # служебная очередь
     running = False
 
-    descriptors_cache: Dict[str, descriptor_pb2.FileDescriptorSet] = {} # кеш дескрипторов, используется с контейнерами с дескрипторами
+    descriptors_cache: Dict[str, descriptor_pb2.FileDescriptorSet] = (
+        {}
+    )  # кеш дескрипторов, используется с контейнерами с дескрипторами
 
     def __init__(
         self,
-        compression: str = 'brotli',
-        include_descriptors = False,
-        json_structure = True   ,
+        compression: str = "brotli",
+        include_descriptors=False,
+        json_structure=True,
     ):
         """
-            метод для создания GDEPC
+        метод для создания GDEPC
         """
         self.input_queue = asyncio.Queue(maxsize=self.max_messages)
         self.result_queue = Queue()
@@ -50,7 +52,7 @@ class GDEPC:
 
     def recompress_with_additional_data(self, data, additional_data):
         """
-            добавляем в контейнер дополнительные данные
+        добавляем в контейнер дополнительные данные
         """
         decompressed_data = compression_decompression[self.compression][
             "decompression"
@@ -62,7 +64,7 @@ class GDEPC:
 
     def pack_message(self, message):
         """
-            упаковываем сообщение с сенсора в объект
+        упаковываем сообщение с сенсора в объект
         """
         columns = list(message.keys())
         columns.sort()
@@ -83,7 +85,7 @@ class GDEPC:
 
     async def mqtt_2_queue(self, url, topic):
         """
-            вычитывает из брокера и перекладывает в очередь сообщений
+        вычитывает из брокера и перекладывает в очередь сообщений
         """
         try:
             messages_num = 0
@@ -98,7 +100,7 @@ class GDEPC:
 
     async def add_messages_to_input_queue(self):
         """
-            добавляем сообщения из очереди сообщений в алгоритм упаковки пока не заполним
+        добавляем сообщения из очереди сообщений в алгоритм упаковки пока не заполним
         """
         logger.debug("Add messages to queue")
 
@@ -113,13 +115,13 @@ class GDEPC:
 
     async def pack(self, estimated: Optional[int] = None):
         """
-            упаковываем в контейнер
+        упаковываем в контейнер
         """
         return self.knapsack.knapsack(estimated)
 
     async def packing(self):
         """
-            запускаем упаковку
+        запускаем упаковку
         """
         while True:
             await self.add_messages_to_input_queue()
@@ -182,7 +184,7 @@ class GDEPC:
 
     async def flush(self) -> List[Message]:
         """
-            проталкиваем оставшиеся сообщения и контейнеры
+        проталкиваем оставшиеся сообщения и контейнеры
         """
         logger.debug("Flushing")
         flushed = []
